@@ -1,5 +1,5 @@
 #Added  a new role named "user" that can only do a select clause on the request. And added a new method POST for admin. 
-package httpapi.authz
+package httpapi.authztest
 
 default allow = false
 
