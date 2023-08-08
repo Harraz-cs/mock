@@ -1,0 +1,22 @@
+{
+  "name": "mock",
+  "version": "1.0.0",
+  "description": "A simple CAP project.",
+  "repository": "<Add your repository here>",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@sap/cds": "^7",
+    "cors": "^2.8.5",
+    "express": "^4",
+    "node-fetch": "^2.6.12",
+    "odata-parser": "^1.4.1",
+    "querystring": "^0.2.1"
+  },
+  "devDependencies": {
+    "@cap-js/sqlite": "^1"
+  },
+  "scripts": {
+    "start": "cds-serve"
+  }
+}
