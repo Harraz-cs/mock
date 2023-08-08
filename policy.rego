@@ -13,7 +13,7 @@ role_permissions = {
 	}},
 	"guest": {"Authors": {
 		"totalSoldCopies": ["$select"],
-		"IDs": ["$select"],
+		"IDTESTTEST": ["$select"],
 	}},
 }
 
