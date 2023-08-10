@@ -5,7 +5,7 @@ default allow = false
 
 role_permissions = {
 	"admin": {"*": {"*": ["*"]}},
-	"user": {"Books": {
+	"customer": {"Books": {
 		"title": ["$select"],
 		"price": ["$select"],
         "ID": ["$select"],

@@ -6,12 +6,28 @@
   "license": "UNLICENSED",
   "private": true,
   "dependencies": {
+    "@cap-js/postgres": "^1.0.1",
     "@sap/cds": "^7",
     "cors": "^2.8.5",
     "express": "^4",
     "node-fetch": "^2.6.12",
     "odata-parser": "^1.4.1",
     "querystring": "^0.2.1"
+  },
+  "cds": {
+    "requires": {
+      "db": {
+        "kind": "postgres",
+        "impl": "@cap-js/postgres",
+        "credentials": {
+          "host": "${process.env.DB_HOST}",
+          "port": "${process.env.DB_PORT}",
+          "database": "${process.env.DB_NAME}",
+          "user": "${process.env.DB_USER}",
+          "password": "${process.env.DB_PASSWORD}"
+        }
+      }
+    }
   },
   "devDependencies": {
     "@cap-js/sqlite": "^1"

@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: example-policy
+data:
+  policy.rego: |-
+{{ .Files.Get "policy.rego" | indent 4 }}

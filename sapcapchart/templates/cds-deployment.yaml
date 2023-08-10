@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-cds-app-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-cds-app
+  template:
+    metadata:
+      labels:
+        app: my-cds-app
+    spec:
+      containers:
+        - name: my-cds-app
+          image: harrazrajang/sap-cap:1.0
+          ports:
+            - containerPort: 4004
+          env:
+            - name: OPA_URL
+              value: "http://opa:8181"
+            - name: DB_HOST
+              value: "postgres"
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_NAME
+              value: "bookshop-tia"
+            - name: DB_USER
+              value: "postgres"
+            - name: DB_PASSWORD
+              value: "postgres"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-cds-app-service
+spec:
+  selector:
+    app: my-cds-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 4004
+  type: LoadBalancer
