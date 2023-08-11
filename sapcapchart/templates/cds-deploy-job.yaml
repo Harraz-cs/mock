@@ -12,21 +12,21 @@ spec:
       restartPolicy: Never
       containers:
         - name: cds-deploy
-          image: harrazrajang/sap-cap:1.0
+          image: {{ .Values.image.repository }}
           command:
             - "sh"
             - "-c"
-            - "sleep 60 && cds deploy"
+            - "sleep 10 && cds deploy"
           env:
             - name: OPA_URL
-              value: "http://opa:8181"
+              value: "{{ .Values.environment.OPA_URL }}"
             - name: DB_HOST
-              value: "postgres"
+              value: "{{ .Values.environment.DB_HOST }}"
             - name: DB_PORT
-              value: "5432"
+              value: "{{ .Values.environment.DB_PORT }}"
             - name: DB_NAME
-              value: "bookshop-tia"
+              value: "{{ .Values.environment.DB_NAME }}"
             - name: DB_USER
-              value: "postgres"
+              value: "{{ .Values.environment.DB_USER }}"
             - name: DB_PASSWORD
-              value: "postgres"
+              value: "{{ .Values.environment.DB_PASSWORD }}"

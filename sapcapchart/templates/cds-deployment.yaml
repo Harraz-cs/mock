@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: my-cds-app-deployment
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: my-cds-app
@@ -14,22 +14,23 @@ spec:
     spec:
       containers:
         - name: my-cds-app
-          image: harrazrajang/sap-cap:1.0
+          image: {{ .Values.image.repository }}
           ports:
             - containerPort: 4004
           env:
             - name: OPA_URL
-              value: "http://opa:8181"
+              value: "{{ .Values.environment.OPA_URL }}"
             - name: DB_HOST
-              value: "postgres"
+              value: "{{ .Values.environment.DB_HOST }}"
             - name: DB_PORT
-              value: "5432"
+              value: "{{ .Values.environment.DB_PORT }}"
             - name: DB_NAME
-              value: "bookshop-tia"
+              value: "{{ .Values.environment.DB_NAME }}"
             - name: DB_USER
-              value: "postgres"
+              value: "{{ .Values.environment.DB_USER }}"
             - name: DB_PASSWORD
-              value: "postgres"
+              value: "{{ .Values.environment.DB_PASSWORD }}"
+
 
 ---
 apiVersion: v1
@@ -41,6 +42,6 @@ spec:
     app: my-cds-app
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 4004
-  type: LoadBalancer
+      port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+  type: {{ .Values.service.type }}
