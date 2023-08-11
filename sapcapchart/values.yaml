@@ -11,7 +11,8 @@ service:
   targetPort: 4004
 
 environment:
-  OPA_URL: "http://opa:8181"
+  OPA_HOST: "opa"
+  OPA_PORT: "8181"
   DB_HOST: "postgres"
   DB_PORT: "5432"
   DB_NAME: "bookshop-tia"

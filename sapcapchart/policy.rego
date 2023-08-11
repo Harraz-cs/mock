@@ -27,6 +27,13 @@ allow {
 	not query_violates_permissions(role, entity)
 }
 
+# Policy to allow access to metadata page
+allow {
+    input.method == "GET"
+    input.path = ["", ""]
+}
+
+
 # Policy to handle POST for "Books" Entity
 allow {
 	input.method == "POST" 

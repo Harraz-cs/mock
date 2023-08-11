@@ -1,11 +1,23 @@
-const fetch = require("node-fetch");
-const opaUrl = process.env.OPA_URL || "http://localhost:8181";
+// Get OPA host and port from environment variables
+const OPA_HOST = process.env.OPA_HOST || "localhost"; // Default to localhost if not set
+const OPA_PORT = process.env.OPA_PORT || "8181"; // Default to 8181 if not set
+
+// Construct the OPA URL
+const OPA_URL = `http://${OPA_HOST}:${OPA_PORT}/v1/data/httpapi/authz/allow`;
 
 async function authz(req, res, next) {
+  // Dynamically import necessary modules
+  const fetch = (await import("node-fetch")).default;
+  const http = await import("http");
+
+  // For handling self-signed certificates during development
+  const agent = new http.Agent({
+    rejectUnauthorized: false,
+  });
+
   // Log the query object
   console.log("Received query object:", req.query);
   const role = req.headers["x-user-role"];
-  const service = req.headers["x-service-name"];
 
   // Construct the input object directly from the parsed query object
   const input = {
@@ -17,37 +29,33 @@ async function authz(req, res, next) {
     },
   };
 
-  console.log("input: " + JSON.stringify(input));
-
-  //create a 2 url of the request to the authorization service
-  const policy_1 = "http://localhost:8181/v1/data/httpapi/authz/allow";
-  const policy_2 = "http://localhost:8181/v1/data/httpapi/authztest/allow";
-  let url;
+  console.log("input:", JSON.stringify(input));
 
   try {
-    // if (service == "authztest") {
-    //   url = policy_2;
-    // } else {
-    //   url = policy_1;
-    // }
-
     // Send the request to the authorization service
-    const response = await fetch(`${opaUrl}/v1/data/httpapi/authz/allow`, {
+    const response = await fetch(OPA_URL, {
       method: "POST",
       body: JSON.stringify({ input }),
       headers: { "Content-Type": "application/json" },
+      agent: agent,
     });
 
-    const { result } = await response.json();
+    const responseData = await response.text();
+    console.log("OPA Response Raw:", responseData);
 
-    //print the result
-    console.log("result: " + JSON.stringify(result));
+    try {
+      const { result } = JSON.parse(responseData);
+      console.log("OPA Response JSON:", JSON.stringify(result));
 
-    // Proceed if the authorization is successful
-    if (result) {
-      next();
-    } else {
-      res.status(403).send("Forbidden");
+      // Proceed if the authorization is successful
+      if (result) {
+        next();
+      } else {
+        res.status(403).send("Forbidden");
+      }
+    } catch (parseError) {
+      console.error("Error parsing OPA response:", parseError);
+      res.status(500).send("Error parsing OPA response");
     }
   } catch (error) {
     console.error("Failed to authorize:", error);

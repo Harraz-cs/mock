@@ -18,8 +18,10 @@ spec:
             - "-c"
             - "sleep 10 && cds deploy"
           env:
-            - name: OPA_URL
-              value: "{{ .Values.environment.OPA_URL }}"
+            - name: OPA_HOST
+              value: "{{ .Values.environment.OPA_HOST }}"
+            - name: OPA_PORT
+              value: "{{ .Values.environment.OPA_PORT }}"
             - name: DB_HOST
               value: "{{ .Values.environment.DB_HOST }}"
             - name: DB_PORT
