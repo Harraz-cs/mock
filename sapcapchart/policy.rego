@@ -20,7 +20,7 @@ role_permissions = {
 # Policy to handle GET requests
 allow {
 	input.method == "GET"
-	input.path = ["", "odata", "v4", "book", entity]
+	input.path = ["", "odata", "v4", "bookstore", entity]
 	role := input.user.role
 	has_entity_permission(role, entity)
 	count(input.query) > 0
@@ -30,14 +30,14 @@ allow {
 # Policy to handle POST for "Books" Entity
 allow {
 	input.method == "POST" 
-	input.path = ["", "odata", "v4", "book", "Books"]
+	input.path = ["", "odata", "v4", "bookstore", "Books"]
 	input.user.role == "admin"
 }
 
 # Policy to handle POST for "Authors" entity
 allow {
 	input.method == "POST"
-	input.path = ["", "odata", "v4", "book", "Authors"]
+	input.path = ["", "odata", "v4", "bookstore", "Authors"]
 	input.user.role == "admin"
 }
 
