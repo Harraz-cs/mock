@@ -87,3 +87,26 @@ has_entity_permission(role, entity) {
 has_entity_permission(role, _) {
 	role_permissions[role]["*"]
 }
+
+
+
+# Permission for accessing the metadata page
+allow{
+	input.method == "GET"
+	last(input.path) == "$metadata"
+}
+
+# Permission to access opa "/policies"
+allow{
+	input.method == "GET"
+	last(input.path) == "policies"
+}
+
+# Allow access to any path that ends with /bookstore
+allow {
+    input.method == "GET"
+    last(input.path) == "bookstore"
+}
+
+# Utility rule to get the last element of an array
+last(array) = array[count(array) -1]

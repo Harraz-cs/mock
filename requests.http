@@ -42,11 +42,10 @@ Content-Type: application/json
 X-User-Role: admin
 
 {
-    "ID": 40,
-  "totalSoldCopies": 423,
-  "socialSecurityNumber": {
-    "ID": 123
-  }
+    "AuthorID": 43,
+    "name": "Perry Pue",
+    "bio": "Perry Pue is a developer from rajang",
+    "dateOfBirth": "1980-01-01"
 }
 
 
