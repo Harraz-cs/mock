@@ -1,0 +1,23 @@
+openapi: 3.0.0
+info:
+  title: My API
+  version: "1.0"
+paths:
+  /api/policies:
+    get:
+      summary: Retrieve policies
+      parameters:
+        - name: pretty
+          in: query
+          description: Format the output in a pretty format
+          required: false
+          schema:
+            type: string
+            enum: [true, false]
+      responses:
+        "200":
+          description: Successful retrieval of policies
+        "400":
+          description: Invalid policy data format
+        "500":
+          description: Error fetching policies

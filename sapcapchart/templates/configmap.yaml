@@ -5,3 +5,5 @@ metadata:
 data:
   policy.rego: |-
 {{ .Files.Get "policy.rego" | indent 4 }}
+
+

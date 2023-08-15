@@ -108,5 +108,11 @@ allow {
     last(input.path) == "bookstore"
 }
 
+# Allow access to any path that ends with /bookstore
+allow {
+    input.method == "GET"
+    last(input.path) == "swagger"
+}
+
 # Utility rule to get the last element of an array
 last(array) = array[count(array) -1]

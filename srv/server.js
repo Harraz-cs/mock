@@ -1,11 +1,15 @@
 const cds = require("@sap/cds");
 const cors = require("cors");
 const authorize = require("../middleware/authorize");
-const swaggerUi = require("cds-swagger-ui-express");
+const swaggerUi = require("swagger-ui-express");
+const swaggerUi2 = require("cds-swagger-ui-express");
 const axios = require("axios");
 
 const OPA_HOST = process.env.OPA_HOST || "localhost";
 const OPA_PORT = process.env.OPA_PORT || "8181";
+
+const yaml = require("js-yaml");
+const fs = require("fs");
 
 // Construct the OPA URL
 const OPA_URL = `http://${OPA_HOST}:${OPA_PORT}/v1/policies`;
@@ -14,8 +18,24 @@ cds.on("bootstrap", (app) => {
   app.use(cors());
 
   // Add swagger UI
-  app.use(swaggerUi());
- 
+  app.use(
+    swaggerUi2({
+      basePath: "/api-docs", // the root path to mount the middleware on
+      apiPath: "", // the root path for the services (useful if behind a reverse proxy)
+      diagram: true, // whether to render the YUML diagram
+    })
+  );
+
+  //console log the current dir
+  console.log("Current directory: " + process.cwd());
+  // Load the OpenAPI specification
+  const swaggerDocument = yaml.load(
+    fs.readFileSync("./srv/OpenApiSpec.yaml", "utf8")
+  );
+
+  // Add swagger UI
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
   // Add custom route to fetch policies
   app.get("/api/policies", async (req, res) => {
     const pretty = req.query.pretty;
@@ -27,7 +47,20 @@ cds.on("bootstrap", (app) => {
         },
       });
 
-      res.json(response.data);
+      // Check if the result array exists and has at least one item
+      if (
+        !response.data ||
+        !response.data.result ||
+        response.data.result.length === 0
+      ) {
+        return res.status(400).send("Invalid policy data format");
+      }
+
+      // Get the raw policy string
+      const rawPolicy = response.data.result[0].raw;
+
+      const parsedPolicy = parsePolicy(rawPolicy); // Pass the raw policy string
+      res.send(parsedPolicy);
     } catch (error) {
       console.error(`Error: ${error}`);
       res.status(500).send("Error fetching policies");
@@ -42,10 +75,26 @@ cds.on("bootstrap", (app) => {
     console.error(err.stack); // Log error stack trace
     res.status(500).send("Oops! The server broke.");
   });
-
-  
 });
 
 cds.on("served", async () => {
   console.log("Application is served");
 });
+
+// Function to parse nested policy data into the desired format
+function parsePolicy(data) {
+  const lines = data.split("\n");
+  return lines
+    .map((line) => {
+      if (line.startsWith("package")) {
+        return `Namespace: ${line}`;
+      } else if (line.startsWith("default")) {
+        return `Default Rule: ${line}`;
+      } else if (line.includes("=")) {
+        const [left, right] = line.split("=");
+        return `${left.trim()}: ${right.trim()}`;
+      }
+      return line;
+    })
+    .join("\n");
+}
