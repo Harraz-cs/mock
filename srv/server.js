@@ -26,8 +26,6 @@ cds.on("bootstrap", (app) => {
     })
   );
 
-  //console log the current dir
-  console.log("Current directory: " + process.cwd());
   // Load the OpenAPI specification
   const swaggerDocument = yaml.load(
     fs.readFileSync("./srv/OpenApiSpec.yaml", "utf8")

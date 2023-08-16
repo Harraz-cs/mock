@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: My API
+  title: Open Policy Agent API
   version: "1.0"
 paths:
   /api/policies:

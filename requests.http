@@ -48,8 +48,15 @@ X-User-Role: admin
 {
     "AuthorID": 43,
     "name": "Perry Pue",
-    "bio": "Perry Pue is a developer from rajang",
+    "bio": "Perry Pue is a developer from capitalajang",
     "dateOfBirth": "1980-01-01"
 }
 
+### call policies
+GET http://localhost/api/policies HTTP/1.1
+Content-Type: application/json
 
+
+### call policies
+GET http://localhost/Swagger_UI.html HTTP/1.1
+Content-Type: application/json
