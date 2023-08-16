@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: example-policy
 data:
-  policy.rego: |-
-{{ .Files.Get "policy.rego" | indent 4 }}
-
-
+  base.rego: |-
+{{ .Files.Get "policy/base.rego" | indent 4 }}
+  bookstore.rego: |-
+{{ .Files.Get "policy/bookstore.rego" | indent 4 }}
