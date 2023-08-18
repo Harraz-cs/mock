@@ -43,3 +43,5 @@ entity ContactInfo {
   Address : String;
   author: Association to Authors;
 }
+
+

@@ -1,9 +1,12 @@
+
 const cds = require("@sap/cds");
 const cors = require("cors");
 const authorize = require("../middleware/authorize");
 const swaggerUi = require("swagger-ui-express");
 const swaggerUi2 = require("cds-swagger-ui-express");
 const axios = require("axios");
+const policyParser = require("./policies");
+
 
 const OPA_HOST = process.env.OPA_HOST || "localhost";
 const OPA_PORT = process.env.OPA_PORT || "8181";
@@ -37,14 +40,14 @@ cds.on("bootstrap", (app) => {
   // Add custom route to fetch policies
   app.get("/api/policies", async (req, res) => {
     const pretty = req.query.pretty;
-
+  
     try {
       const response = await axios.get(OPA_URL, {
         params: {
           pretty: pretty === "true", // ensure pretty is a boolean
         },
       });
-
+  
       // Check if the result array exists and has at least one item
       if (
         !response.data ||
@@ -53,15 +56,16 @@ cds.on("bootstrap", (app) => {
       ) {
         return res.status(400).send("Invalid policy data format");
       }
+  
+      //print the raw policy
+      console.log(response.data);
 
       // Get the raw policy string
       const rawPolicy = response.data.result[0].raw;
-
-      const parsedPolicy = parsePolicy(rawPolicy); // Pass the raw policy string
+      const parsedPolicy = policyParser(rawPolicy);
       res.send(parsedPolicy);
     } catch (error) {
-      console.error(`Error: ${error}`);
-      res.status(500).send("Error fetching policies");
+      res.status(400).send(error.message);
     }
   });
 
@@ -79,20 +83,3 @@ cds.on("served", async () => {
   console.log("Application is served");
 });
 
-// Function to parse nested policy data into the desired format
-function parsePolicy(data) {
-  const lines = data.split("\n");
-  return lines
-    .map((line) => {
-      if (line.startsWith("package")) {
-        return `Namespace: ${line}`;
-      } else if (line.startsWith("default")) {
-        return `Default Rule: ${line}`;
-      } else if (line.includes("=")) {
-        const [left, right] = line.split("=");
-        return `${left.trim()}: ${right.trim()}`;
-      }
-      return line;
-    })
-    .join("\n");
-}

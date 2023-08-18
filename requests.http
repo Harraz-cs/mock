@@ -1,14 +1,15 @@
 ### Fetch all books
-GET http://localhost/odata/v4/bookstore/Books?$select=genre&$expand=Author HTTP/1.1
+GET http://localhost/odata/v4/bookstore/Books?$select=title&$expand=Author HTTP/1.1
 X-User-Role: admin
 
+
 ### Fetch book with id 1
-GET http://localhost/odata/v4/bookstore/Books(1)?$select=genre&$expand=Author HTTP/1.1
+GET http://localhost/odata/v4/bookstore/Books(2)?$select=genre&$expand=Author HTTP/1.1
 X-User-Role: admin
 
 
 ### Fetch all authors
-GET http://localhost/odata/v4/bookstore/Authors?$select=name HTTP/1.1
+GET http://localhost/odata/v4/bookstore/Authors HTTP/1.1
 X-User-Role: admin
 
 ### Create a new Book
@@ -56,7 +57,3 @@ X-User-Role: admin
 GET http://localhost/api/policies HTTP/1.1
 Content-Type: application/json
 
-
-### call policies
-GET http://localhost/Swagger_UI.html HTTP/1.1
-Content-Type: application/json
