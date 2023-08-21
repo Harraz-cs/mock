@@ -14,8 +14,8 @@ const OPA_PORT = process.env.OPA_PORT || "8181";
 const yaml = require("js-yaml");
 const fs = require("fs");
 
-// Construct the OPA URL
-const OPA_URL = `http://${OPA_HOST}:${OPA_PORT}/v1/policies`;
+// Construct the OPA URL to fetch specific polices by id. The id is the name of the policy file. eg bookstore.rego. 
+const OPA_URL = `http://${OPA_HOST}:${OPA_PORT}/v1/policies/policies/bookstore.rego`;
 
 cds.on("bootstrap", (app) => {
   app.use(cors());
@@ -56,15 +56,10 @@ cds.on("bootstrap", (app) => {
       ) {
         return res.status(400).send("Invalid policy data format");
       }
-
-
+;
       // Get the raw policy string
-      const rawPolicy = response.data.result[1].raw;
+      const rawPolicy = response.data.result.raw;
       const parsedPolicy = policy(rawPolicy);
-
-      // Translate the permissions
-      // const translatedPermissions = policy.translatePermissions(parsedPolicy);
-      // console.log("translatedPermissions:", translatedPermissions);
       
       res.send(parsedPolicy);
     } catch (error) {
