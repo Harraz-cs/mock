@@ -2,6 +2,30 @@ package httpapi.authz
 
 default allow = false
 
+# Policy to handle GET requests for the bookstore
+allow {
+	input.method == "GET"
+	input.path = ["", "odata", "v4", service, entity]
+	role := input.user.role
+	has_entity_permission(role, entity)
+	count(input.query) > 0
+	not query_violates_permissions(role, entity)
+}
+
+# Policy to allow access to metadata page
+allow {
+    input.method == "GET"
+    input.path = ["", ""]
+}
+
+# Permission for accessing the metadata page
+allow{
+	input.method == "GET"
+	last(input.path) == "$metadata"
+}
+
+
+
 # Utility rule to get the last element of an array
 last(array) = array[count(array) -1]
 
@@ -44,3 +68,4 @@ has_entity_permission(role, entity) {
 has_entity_permission(role, _) {
 	role_permissions[role]["*"]
 }
+

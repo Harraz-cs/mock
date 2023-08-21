@@ -9,7 +9,7 @@ X-User-Role: admin
 
 
 ### Fetch all authors
-GET http://localhost/odata/v4/bookstore/Authors HTTP/1.1
+GET http://localhost/odata/v4/bookstore/Authors?$select=name HTTP/1.1
 X-User-Role: admin
 
 ### Create a new Book

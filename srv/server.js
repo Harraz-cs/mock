@@ -5,7 +5,7 @@ const authorize = require("../middleware/authorize");
 const swaggerUi = require("swagger-ui-express");
 const swaggerUi2 = require("cds-swagger-ui-express");
 const axios = require("axios");
-const policyParser = require("./policies");
+const policy = require("./policies");
 
 
 const OPA_HOST = process.env.OPA_HOST || "localhost";
@@ -56,13 +56,16 @@ cds.on("bootstrap", (app) => {
       ) {
         return res.status(400).send("Invalid policy data format");
       }
-  
-      //print the raw policy
-      console.log(response.data);
+
 
       // Get the raw policy string
-      const rawPolicy = response.data.result[0].raw;
-      const parsedPolicy = policyParser(rawPolicy);
+      const rawPolicy = response.data.result[1].raw;
+      const parsedPolicy = policy(rawPolicy);
+
+      // Translate the permissions
+      // const translatedPermissions = policy.translatePermissions(parsedPolicy);
+      // console.log("translatedPermissions:", translatedPermissions);
+      
       res.send(parsedPolicy);
     } catch (error) {
       res.status(400).send(error.message);
